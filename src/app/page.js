@@ -1,65 +1,126 @@
-import Image from "next/image";
+"use client";
+
+import { useState } from "react";
+import InvoiceHeader from "@/components/molecules/InvoiceHeader";
+import CompanyForm from "@/components/organisms/CompanyForm";
+import PaymentTypeSelect from "@/components/molecules/PaymentTypeSelect";
+import ItemsTable from "@/components/organisms/ItemsTable";
+import TotalsBlock from "@/components/molecules/TotalsBlock";
+import SignerBlock from "@/components/molecules/SignerBlock";
+import NotesBlock from "@/components/molecules/NotesBlock";
+import { exportPDFtoFile } from "@/utils/pdf/exportPDF";
+
+const initialCompany = {
+  name: "",
+  regNum: "",
+  address: "",
+  vatNum: "",
+  bankName: "",
+  account: "",
+  swift: "",
+};
+
+const initialItem = { name: "", unit: "", quantity: 0, price: 0, total: 0 };
 
 export default function Home() {
+
+  const [invoiceNumber, setInvoiceNumber] = useState("");
+  const [invoiceDate, setInvoiceDate] = useState("");
+  const [issuer, setIssuer] = useState(initialCompany);
+  const [receiver, setReceiver] = useState(initialCompany);
+  const [items, setItems] = useState([initialItem]);
+  const [issuerName, setIssuerName] = useState("");
+  const [note, setNote] = useState("Maksājuma uzdevumā, lūdzam, norādīt rēķina nr.");
+
+  const handleItemChange = (index, field, value) => {
+    const newItems = [...items];
+    newItems[index][field] = field === "quantity" || field === "price" ? Number(value) : value;
+    newItems[index].total = newItems[index].quantity * newItems[index].price;
+    setItems(newItems);
+  };
+
+  const addItem = () => {
+    setItems((prev) => [...prev, { ...initialItem }])
+  };
+
+  const removeItem = (indexToRemove) => {
+    setItems((prev) =>
+      prev.filter((_, index) => index !== indexToRemove)
+    );
+  };
+
+  const subTotal = items.reduce((acc, item) => acc + item.total, 0);
+  const vat = subTotal * 0.21; // 21%
+  const totalWithVat = subTotal + vat;
+
+  const handleExportPdf = () => {
+    exportPDFtoFile({
+      invoiceNumber,
+      invoiceDate,
+      issuer,
+      receiver,
+      items,
+      subTotal,
+      vat,
+      totalWithVat,
+      issuerName,
+      note,
+    });
+  };
+  
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.js file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
+    <main className="p-8">
+      {/* Reķina galvene */}
+          <InvoiceHeader
+            invoiceNumber={invoiceNumber}
+            setInvoiceNumber={setInvoiceNumber}
+            invoiceDate={invoiceDate}
+            setInvoiceDate={setInvoiceDate}
+          />
+
+      {/* Pakalpojuma sniedzēja info */}
+      <CompanyForm title={"Pakalpojuma sniedzējs"} data={issuer} onChange={setIssuer} />
+
+      {/* Pakalpojuma saņēmēja info */}
+      <CompanyForm title={"Pаkalpojuma saņēmējs"} data={receiver} onChange={setReceiver} />
+     
+      {/* Apmaksas veids */}
+      <PaymentTypeSelect />
+
+      {/* Pakalpojumu tabula */}
+      <div className="mb-6">
+        <ItemsTable 
+            items={items} 
+            handleItemChange={handleItemChange} 
+            removeItem={removeItem} 
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+
+            <button
+            onClick={addItem}
+            className="bg-blue-500 text-white px-4 py-2 rounded mb-4 mt-4"
+            >
+              Pievienot pakalpojumu
+            </button>
+
+      {/* Kopsummas */}
+      <TotalsBlock subTotal={subTotal}  vat={vat} totalWithVat={totalWithVat} />
+
+
+      {/* Izsniedzējs */}
+      <SignerBlock issuerName={issuerName} setIssuerName={setIssuerName} />
+
+      {/* Piezīmes */}
+      <NotesBlock note={note} setNote={setNote} />
+
+            <button
+              type="button"
+              onClick={handleExportPdf}
+              className="bg-green-500 text-white px-4 py-2 rounded mt-6"
+            >
+              Saglabāt PDF
+            </button>
+   </div>
+</main>
   );
 }
