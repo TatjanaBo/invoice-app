@@ -13,7 +13,7 @@ It is intended as a practical tool and a portfolio project demonstrating form ha
 Šī ir tīmekļa lietotne rēķinu izrakstīšanai atbilstoši Latvijas grāmatvedības prasībām.
 Lietotne ļauj ievadīt uzņēmumu datus, pievienot pakalpojumus, automātiski aprēķināt PVN (21%) un saglabāt rēķinu PDF formātā.
 Projekts ir izstrādāts, izmantojot Next.js, React un Tailwind CSS, un darbojas pilnībā pārlūkā.
-Tas kalpo gan kā praktisks rīks, gan kā portfeļa projekts.
+Izstrādāts gan kā praktisks rīks, gan kā portfolio projekts.
 
 Ja vēlaties izmēģināt lietotni, sekojiet saitei: [Link](https://invoice-app-sigma-nine.vercel.app)
 
