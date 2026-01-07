@@ -1,3 +1,23 @@
+## Invoice App for Latvia
+
+If you want to interact with the app, please follow the link: [Click Here](https://invoice-app-sigma-nine.vercel.app)
+
+This is a web application for creating and issuing invoices according to Latvian accounting requirements.
+The app allows users to enter company details, add services, automatically calculate VAT (21%), and generate a printable PDF invoice.
+The project is built with Next.js, React, and Tailwind CSS, and runs fully on the client side.
+It is intended as a practical tool and a portfolio project demonstrating form handling, calculations, and PDF generation.
+
+
+## Rēķinu izrakstīšanas lietotne Latvijai
+
+Šī ir tīmekļa lietotne rēķinu izrakstīšanai atbilstoši Latvijas grāmatvedības prasībām.
+Lietotne ļauj ievadīt uzņēmumu datus, pievienot pakalpojumus, automātiski aprēķināt PVN (21%) un saglabāt rēķinu PDF formātā.
+Projekts ir izstrādāts, izmantojot Next.js, React un Tailwind CSS, un darbojas pilnībā pārlūkā.
+Tas kalpo gan kā praktisks rīks, gan kā portfeļa projekts.
+
+Ja vēlaties izmēģināt lietotni, sekojiet saitei: [Link](https://invoice-app-sigma-nine.vercel.app)
+
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
