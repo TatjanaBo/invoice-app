@@ -30,7 +30,7 @@ export default function Home() {
   const [receiver, setReceiver] = useState(initialCompany);
   const [items, setItems] = useState([initialItem]);
   const [issuerName, setIssuerName] = useState("");
-  const [note, setNote] = useState("Maksājuma uzdevumā, lūdzam, norādīt rēķina nr.");
+  const [note, setNote] = useState("");
 
   const handleItemChange = (index, field, value) => {
     const newItems = [...items];
@@ -53,6 +53,13 @@ export default function Home() {
   const vat = subTotal * 0.21; // 21%
   const totalWithVat = subTotal + vat;
 
+  const hasValidItems = items.some(
+    (item) =>
+      item.name &&
+      item.quantity > 0 &&
+      item.price > 0
+  );
+
   const handleExportPdf = () => {
     exportPDFtoFile({
       invoiceNumber,
@@ -67,7 +74,6 @@ export default function Home() {
       note,
     });
   };
-  
 
   return (
     <main className="p-8">
@@ -116,7 +122,12 @@ export default function Home() {
             <button
               type="button"
               onClick={handleExportPdf}
-              className="bg-green-500 text-white px-4 py-2 rounded mt-6"
+              disabled={!hasValidItems}
+              className={`px-4 py-2 rounded mt-6 text-white ${
+                hasValidItems
+                  ? "bg-green-500 hover:bg-green-600"
+                  : "bg-gray-400 cursor-not-allowed"
+              }`}
             >
               Saglabāt PDF
             </button>

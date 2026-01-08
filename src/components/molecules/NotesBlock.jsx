@@ -6,6 +6,7 @@ export default function NotesBlock({ note, setNote }) {
       <textarea
         value={note}
         onChange={(e) => setNote(e.target.value)}
+        placeholder="Maksājuma uzdevumā, lūdzam, norādīt rēķina nr."
         className="border p-2 rounded w-full max-w-xl text-center"
         rows={2}
       />

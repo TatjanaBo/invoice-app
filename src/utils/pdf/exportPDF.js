@@ -197,7 +197,8 @@ doc.text(wrappedWords, 30, yTotals);
     doc.text(`Izsniedza: ${issuerName}`, 10, finalY + 40);
   
     // Piezīmes
-    doc.text(note, 105, finalY + 50, { align: "center" });
+    const noteText = note?.trim() || "Maksājuma uzdevumā, lūdzam, norādīt rēķina nr.";
+    doc.text(noteText, 105, finalY + 50, { align: "center" });
   
     // Saglabāt PDF
     doc.save(`Rēķins_${invoiceNumber || "000"}.pdf`);
