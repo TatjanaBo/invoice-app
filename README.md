@@ -7,6 +7,16 @@ The app allows users to enter company details, add services, automatically calcu
 The project is built with Next.js, React, and Tailwind CSS, and runs fully on the client side.
 It is intended as a practical tool and a portfolio project demonstrating form handling, calculations, and PDF generation.
 
+- [x] PDF export
+- [x] Save invoice note
+- [x] Company data structure
+- [x] Local save of companies
+- [x] Autocomplete + dropdown for companies 
+- [ ] Invoice numbering
+- [ ] Excel export
+- [ ] Custom VAT rate selection (0% / 21% / no VAT)
+
+
 
 ## Rēķinu izrakstīšanas lietotne Latvijai
 
@@ -16,6 +26,16 @@ Projekts ir izstrādāts, izmantojot Next.js, React un Tailwind CSS, un darbojas
 Izstrādāts gan kā praktisks rīks, gan kā portfolio projekts.
 
 Ja vēlaties izmēģināt lietotni, sekojiet saitei: [Link](https://invoice-app-sigma-nine.vercel.app)
+
+- [x] PDF eksports
+- [x] Piezīmju saglabāšana
+- [x] Uzņēmumu datu ievade
+- [x] Uzņēmumu lokāla saglabāšana
+- [x] Uzņēmumu autocomplete + izvēlne 
+- [ ] Rēķinu numerācija
+- [ ] Excel eksports
+- [ ] PVN likmju izvēle (0% / 21% / bez PVN)
+
 
 
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
