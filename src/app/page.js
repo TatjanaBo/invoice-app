@@ -31,16 +31,26 @@ export default function Home() {
   const [invoiceDate, setInvoiceDate] = useState("");
   const [issuer, setIssuer] = useState(initialCompany);
   const [receiver, setReceiver] = useState(initialCompany);
-  const [items, setItems] = useState([initialItem]);
+  const [items, setItems] = useState([{ ...initialItem }]);
   const [issuerName, setIssuerName] = useState("");
   const [note, setNote] = useState("");
   const [companies, setCompanies] = useState([]);
 
   const handleItemChange = (index, field, value) => {
-    const newItems = [...items];
-    newItems[index][field] = field === "quantity" || field === "price" ? Number(value) : value;
-    newItems[index].total = newItems[index].quantity * newItems[index].price;
-    setItems(newItems);
+    setItems((prev) => {
+      const next = [...prev];
+      const item = { ...next[index] };
+  
+      item[field] =
+        field === "quantity" || field === "price" ? Number(value) : value;
+  
+      const quantity = Number(item.quantity) || 0;
+      const price = Number(item.price) || 0;
+      item.total = quantity * price;
+  
+      next[index] = item;
+      return next;
+    });
   };
 
   const addItem = () => {
