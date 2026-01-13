@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import InvoiceHeader from "@/components/molecules/InvoiceHeader";
 import CompanyForm from "@/components/organisms/CompanyForm";
 import PaymentTypeSelect from "@/components/molecules/PaymentTypeSelect";
@@ -20,6 +20,9 @@ const initialCompany = {
   swift: "",
 };
 
+const COMPANIES_STORAGE_KEY = "invoice_app_companies_v1";
+
+
 const initialItem = { name: "", unit: "", quantity: 0, price: 0, total: 0 };
 
 export default function Home() {
@@ -31,6 +34,7 @@ export default function Home() {
   const [items, setItems] = useState([initialItem]);
   const [issuerName, setIssuerName] = useState("");
   const [note, setNote] = useState("");
+  const [companies, setCompanies] = useState([]);
 
   const handleItemChange = (index, field, value) => {
     const newItems = [...items];
@@ -75,6 +79,85 @@ export default function Home() {
     });
   };
 
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+  
+    const stored = window.localStorage.getItem(COMPANIES_STORAGE_KEY);
+    if (stored) {
+      try {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed)) {
+          setCompanies(parsed);
+        }
+      } catch (e) {
+        console.error("Failed to parse companies from localStorage", e);
+      }
+    }
+  }, []);
+  
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    window.localStorage.setItem(
+      COMPANIES_STORAGE_KEY,
+      JSON.stringify(companies)
+    );
+  }, [companies]);
+  
+  const saveCompany = (companyData) => {
+    if (!companyData?.name) return; // nesaglabā bez nosaukuma
+  
+    setCompanies((prev) => {
+      const existingIndex = prev.findIndex(
+        (c) =>
+          c.name.toLowerCase() === companyData.name.toLowerCase() &&
+          (c.regNum || "") === (companyData.regNum || "")
+      );
+  
+      const newEntry = {
+        ...companyData,
+        id:
+          existingIndex >= 0
+            ? prev[existingIndex].id
+            : (globalThis.crypto?.randomUUID?.() ?? String(Date.now())),
+      };
+  
+      if (existingIndex >= 0) {
+        const copy = [...prev];
+        copy[existingIndex] = newEntry;
+        return copy;
+      }
+  
+      return [...prev, newEntry];
+    });
+  };
+  
+  const handleSelectIssuerCompany = (company) => {
+    if (!company) return;
+    setIssuer({
+      name: company.name || "",
+      regNum: company.regNum || "",
+      address: company.address || "",
+      vatNum: company.vatNum || "",
+      bankName: company.bankName || "",
+      account: company.account || "",
+      swift: company.swift || "",
+    });
+  };
+  
+  const handleSelectReceiverCompany = (company) => {
+    if (!company) return;
+    setReceiver({
+      name: company.name || "",
+      regNum: company.regNum || "",
+      address: company.address || "",
+      vatNum: company.vatNum || "",
+      bankName: company.bankName || "",
+      account: company.account || "",
+      swift: company.swift || "",
+    });
+  };
+  
+
   return (
     <main className="p-8">
       {/* Reķina galvene */}
@@ -86,10 +169,24 @@ export default function Home() {
           />
 
       {/* Pakalpojuma sniedzēja info */}
-      <CompanyForm title={"Pakalpojuma sniedzējs"} data={issuer} onChange={setIssuer} />
+      <CompanyForm
+        title={"Pakalpojuma sniedzējs"}
+        data={issuer}
+        onChange={setIssuer}
+        companies={companies}
+        onSelectCompany={handleSelectIssuerCompany}
+        onSaveCompany={saveCompany}
+         />
 
       {/* Pakalpojuma saņēmēja info */}
-      <CompanyForm title={"Pаkalpojuma saņēmējs"} data={receiver} onChange={setReceiver} />
+      <CompanyForm
+       title={"Pаkalpojuma saņēmējs"} 
+       data={receiver}
+       onChange={setReceiver} 
+       companies={companies}
+       onSelectCompany={handleSelectReceiverCompany}
+       onSaveCompany={saveCompany}
+        />
      
       {/* Apmaksas veids */}
       <PaymentTypeSelect />
